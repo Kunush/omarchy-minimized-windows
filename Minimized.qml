@@ -71,6 +71,9 @@ Item {
     root.opened = true
     root.selectedIndex = 0
     windowsModel.clear()
+    // Show the previews saved so far right away, then fresher ones once the
+    // background refresh finishes.
+    root.previewStamp++
     clientsProc.running = true
     previewsProc.running = true
     Qt.callLater(function() { keyCatcher.forceActiveFocus() })

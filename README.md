@@ -4,6 +4,8 @@ An Omarchy shell plugin that adds a proper minimize to Hyprland: minimize any
 window on any layout, then bring windows back from a row of floating glass
 cards along the bottom of the screen, each with a live preview.
 
+![Minimized Windows](preview.png)
+
 ## Features
 
 - **Minimize anywhere**: works on tiled and floating workspaces, not just where
@@ -48,6 +50,8 @@ o.bind("SUPER + CTRL + M", "Minimized windows", { panel = "kunush.minimized-wind
 Hyprland reloads the file on save.
 
 ## Using the row
+
+![The row of minimized windows](docs/cards.png)
 
 | Action | Mouse | Keyboard |
 |---|---|---|

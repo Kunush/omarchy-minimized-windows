@@ -28,15 +28,29 @@ is_minimized() {
 
 dispatch() { hyprctl dispatch "$1" >/dev/null; }
 
-# Captures each minimized window by its toplevel id. This works while the
-# window is hidden and isn't affected by windows on top of it. Previews of
-# windows that are no longer minimized are removed.
+# Captures one window by its toplevel id (unaffected by windows on top of it).
+# Writes to a temp file first, so a failed or timed-out capture keeps the
+# previous preview. Hidden windows that aren't redrawing can be slow to
+# capture, hence the time limit.
+capture_preview() {
+  local address=$1 sid=$2 limit=${3:-3} tmp
+  valid_address "$address" && [[ $sid =~ ^[0-9a-f]+$ ]] || return 1
+  mkdir -p "$PREVIEW_DIR"
+  tmp="$PREVIEW_DIR/.$address.tmp.jpg"
+  if timeout "$limit" grim -T "$sid" -s 0.4 -t jpeg -q 85 "$tmp" 2>/dev/null && [[ -s $tmp ]]; then
+    mv -f "$tmp" "$PREVIEW_DIR/$address.jpg"
+  else
+    rm -f "$tmp"
+  fi
+}
+
+# Refreshes the preview of every minimized window, in parallel, and removes
+# previews of windows that are no longer minimized.
 save_previews() {
   local addr sid keep file
   mkdir -p "$PREVIEW_DIR"
   while read -r addr sid; do
-    valid_address "$addr" && [[ $sid =~ ^[0-9a-f]+$ ]] || continue
-    grim -T "$sid" -s 0.3 -t jpeg -q 80 "$PREVIEW_DIR/$addr.jpg" 2>/dev/null &
+    capture_preview "$addr" "$sid" 3 &
   done < <(hyprctl clients -j | jq -r --arg w "$MINIMIZED" '.[] | select(.workspace.name == $w) | "\(.address) \(.stableId)"')
   wait
 
@@ -67,9 +81,13 @@ restore_window() {
 }
 
 minimize_active() {
-  local address workspace
-  read -r address workspace < <(hyprctl activewindow -j | jq -r '"\(.address // "") \(.workspace.id // "")"')
+  local address workspace sid
+  read -r address workspace sid < <(hyprctl activewindow -j | jq -r '"\(.address // "") \(.workspace.id // "") \(.stableId // "")"')
   valid_address "${address:-}" && [[ ${workspace:-} =~ ^[0-9]+$ ]] || return 1
+
+  # Grab the preview now, while the window is still on screen: that is quick
+  # and reliable. Opening the row later refreshes it if it can.
+  capture_preview "$address" "${sid:-}" 1
 
   clear_minimized_tags "$address"
   dispatch "hl.dsp.window.tag({ tag = \"+omarchy-minimized-from-$workspace\", window = \"address:$address\" })"
