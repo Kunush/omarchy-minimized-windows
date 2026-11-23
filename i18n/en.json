@@ -1,0 +1,5 @@
+{
+  "empty": "No minimized windows",
+  "untitled": "(untitled)",
+  "restoreAll": { "one": "Restore %1 window", "other": "Restore all %1 windows" }
+}

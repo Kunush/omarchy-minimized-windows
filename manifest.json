@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "kunush.minimized-windows",
+  "name": "Minimized Windows",
+  "version": "1.0.0",
+  "author": "Kunush",
+  "license": "MIT",
+  "repository": "https://github.com/Kunush/omarchy-minimized-windows",
+  "description": "Minimize windows on any layout and bring them back from a row of floating glass cards with live previews: restore one, several or all, or close an app right from its card.",
+  "kinds": [
+    "overlay"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "overlay": "Minimized.qml"
+  }
+}
