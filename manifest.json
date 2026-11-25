@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "id": "kunush.minimized-windows",
   "name": "Minimized Windows",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Kunush",
   "license": "MIT",
   "repository": "https://github.com/Kunush/omarchy-minimized-windows",
-  "description": "Minimize windows on any layout and bring them back from a row of floating glass cards with live previews: restore one, several or all, or close an app right from its card.",
+  "description": "Minimize windows on any layout and bring them back from a row of floating glass cards with live previews: restore one, several or all, or close an app right from its card. Suggested shortcuts (add them to ~/.config/hypr/bindings.lua, see the README): Super+M minimizes, Super+Ctrl+M shows the minimized windows, Super+Alt+M brings back the last one.",
   "kinds": [
     "overlay"
   ],
